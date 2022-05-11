@@ -6,51 +6,84 @@
 #include <iomanip>
 #include "Graph.h"
 
+/**
+ * convertie un entier en un char debutant de 'A'
+ *
+ * @param i entier a convertir
+ * @return 'A' + i
+ */
+inline char int_to_alphabet(int i)
+{
+	return static_cast<char>('A' + i);
+}
+
+/**
+ * Constructeur avec param permet a l'utilisateur de génerer sa propre matrice_adjacence_
+ * @param numSommet numero de sommet
+ */
 Graph::Graph(int numSommet) : numSommet_{ numSommet }
 {
-	matrice_adjacence_.resize(numSommet_);        //j'initialise le pointeur avec numSommet instance de list
+	for (int i = 0; i < numSommet_; ++i)
+	{
+		std::vector<int> tmp(numSommet_, 0);
+		matrice_adjacence_.push_back(tmp);
+	}
 	for (int i = 0; i < numSommet_; ++i)
 	{
 		for (int j = 0; j < numSommet_; ++j)
 		{
-			std::cout << "se trouve t\'il un aret entre " << i << " et " << j << " ?y:n" << std::endl;
+			std::cout << "se trouve t\'il un aret de " << int_to_alphabet(i) << " vers " << int_to_alphabet(j)
+					  << " ?y:n" << std::endl;
 			char c{};
 			std::cin >> c;
 			if (c == 'y')
 			{
 				int temp;
-				std::cout << "poid du sommet :" << std::endl;
+				std::cout << "poid de l\'arrete :" << std::endl;
 				std::cin >> temp;
 				matrice_adjacence_[i][j] = temp;
 			}
-			else
-				matrice_adjacence_[i][j] = 0;
 		}
 	}
-	std::cout<<"Le Sommet source est :"<<std::endl;
-	std::cin>>start_;
-	std::cout<<"Le Sommet destination est :"<<std::endl;
-	std::cin>>destination_;
+	std::cout << "Le Sommet source est :" << std::endl;
+	std::cin >> start_;
+	std::cout << "Le Sommet destination est :" << std::endl;
+	std::cin >> destination_;
 }
 
+/**
+ * Constructeur vide crée pour des raison de debugage/test
+ */
 Graph::Graph()
 {
-	numSommet_ = 6;
-	matrice_adjacence_.resize(numSommet_);
-	matrice_adjacence_ = {{ 0, 16, 13, 0, 0, 0 },
-						  { 0, 0, 10, 12, 0, 0 },
-						  { 0, 4, 0, 0, 14, 0 },
-						  { 0, 0, 9, 0, 0, 20 },
-						  { 0, 0, 0, 7, 0, 4 },
-						  { 0, 0, 0, 0, 0, 0 } };
-	start_ = 0;
-	destination_ = 5;
 
+	numSommet_ = 10;
+	matrice_adjacence_.resize(numSommet_);
+	matrice_adjacence_ = {{0,20,40,30,0,0,0,0,0,0},
+						  {0,0,0,0,4,0,25,0,0,0},
+						  {0,0,0,0,35,10,0,0,0,0},
+						  {0,0,0,0,0,15,0,0,20,0},
+						  {0,0,0,0,0,0,5,20,0,0},
+						  {0,0,0,0,0,0,0,10,20,0},
+						  {0,0,0,0,0,0,0,0,0,27},
+						  {0,0,0,0,0,0,15,0,6,15},
+						  {0,0,0,0,0,0,0,0,0,50},
+						  {0,0,0,0,0,0,0,0,0,0}};
+	start_ = 0;
+	destination_ = 9;
 }
+
+/**
+ * Destructeur par default
+ */
 Graph::~Graph()
 {
 
 }
+
+/**
+ * Methode qui permet d'afficher notre graphe sous forme de matrice d'adjacence dans le terminale
+ */
 void Graph::print()
 {
 	int maxColLen[numSommet_];
@@ -63,7 +96,7 @@ void Graph::print()
 		for (int j = 0; j < numSommet_; ++j)
 		{
 			const int num_length{ number_of_digits(matrice_adjacence_[i][j]) };
-			if (num_length > maxColLen[j] )
+			if (num_length > maxColLen[j])
 				maxColLen[j] = num_length;
 		}
 	}
@@ -72,7 +105,8 @@ void Graph::print()
 	{
 		for (int i = 0; i < j.size(); ++i)
 		{
-			std::cout << (i == 0 ? "\n| " : "") << std::setw((int)maxColLen[i]) << j[i] << (i == j.size() - 1 ? " |" : " ");
+			std::cout << (i == 0 ? "\n| " : "") << std::setw((int)maxColLen[i]) << j[i]
+					  << (i == j.size() - 1 ? " |" : " ");
 		}
 	}
 	std::cout << "\n";
